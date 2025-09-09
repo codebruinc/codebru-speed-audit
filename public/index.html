@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeBru Speed Audit - Mobile Performance Analysis</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <span class="logo-text">CodeBru, Inc</span>
+                <span class="logo-subtitle">Speed Audit Tool</span>
+            </div>
+            <nav>
+                <a href="https://github.com/codebru/speed-audit" target="_blank">GitHub</a>
+                <a href="https://codebru.com" target="_blank">CodeBru.com</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Mobile Performance Audit</h1>
+                <p class="subtitle">
+                    Analyze your site's mobile performance. Get actionable fixes.<br>
+                    Built by engineers, for engineers.
+                </p>
+            </div>
+        </section>
+
+        <section class="audit-form">
+            <div class="container">
+                <div class="form-card">
+                    <form id="auditForm">
+                        <div class="input-group">
+                            <input 
+                                type="url" 
+                                id="urlInput" 
+                                placeholder="https://example.com" 
+                                required
+                                pattern="https?://.*"
+                            >
+                            <button type="submit" id="auditButton">
+                                Run Audit
+                            </button>
+                        </div>
+                        <div class="form-hint">
+                            Enter your website URL to analyze mobile performance
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="loading" class="loading hidden">
+            <div class="container">
+                <div class="loading-card">
+                    <div class="spinner"></div>
+                    <h3>Running Performance Audit...</h3>
+                    <p id="loadingStatus">Discovering high-value pages</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="results" class="results hidden">
+            <div class="container">
+                <div class="score-card">
+                    <div class="score-circle">
+                        <svg viewBox="0 0 120 120">
+                            <circle cx="60" cy="60" r="50" class="score-bg"/>
+                            <circle cx="60" cy="60" r="50" class="score-fill"/>
+                        </svg>
+                        <div class="score-text">
+                            <span id="scoreValue">0</span>
+                        </div>
+                    </div>
+                    <div class="score-details">
+                        <h2 id="scoreSummary">Performance Score</h2>
+                        <p id="scoreRecommendation"></p>
+                        <div class="metrics">
+                            <div class="metric">
+                                <span class="metric-label">Avg Load Time</span>
+                                <span class="metric-value" id="avgLoadTime">-</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Pages Audited</span>
+                                <span class="metric-value" id="pagesAudited">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pageResults" class="page-results">
+                    <!-- Page-specific results will be inserted here -->
+                </div>
+
+                <div class="cta-section">
+                    <h3>Need help implementing these fixes?</h3>
+                    <p>CodeBru, Inc offers expert performance optimization services</p>
+                    <a href="https://codebru.com" class="cta-button">
+                        Get Professional Help
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="error" class="error hidden">
+            <div class="container">
+                <div class="error-card">
+                    <h3>Audit Failed</h3>
+                    <p id="errorMessage"></p>
+                    <button onclick="resetAudit()">Try Again</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>
+                Open source tool by <a href="https://codebru.com">CodeBru</a> | 
+                <a href="https://github.com/codebru/speed-audit">View on GitHub</a> |
+                MIT License
+            </p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
