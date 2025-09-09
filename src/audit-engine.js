@@ -3,7 +3,7 @@
  * Based on proven methodology from production deployments
  */
 
-const { chromium } = require('playwright');
+const { chromium, devices } = require('playwright');
 
 // Page patterns for discovering high-value pages
 const PAGE_PATTERNS = {
@@ -86,7 +86,7 @@ async function discoverMoneyPages(baseUrl) {
  */
 async function auditPage(url, browser) {
   const context = await browser.newContext({
-    ...browser._playwright.devices['iPhone 12'],
+    ...devices['iPhone 12'],
     // Simulate slower connection
     offline: false
   });
