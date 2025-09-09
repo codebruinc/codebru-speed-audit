@@ -401,11 +401,71 @@ nav a:hover {
   margin-bottom: 0.25rem;
 }
 
+/* Enhanced Finding Styles */
+.finding-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.finding-impact {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+/* Impact level colors */
+.finding-critical .finding-impact {
+  background: #dc2626;
+  color: white;
+}
+
+.finding-high .finding-impact {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.finding-medium .finding-impact {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.finding-low .finding-impact {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
 .finding-category {
   font-size: 0.75rem;
   color: var(--gray-600);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  background: var(--gray-100);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+}
+
+.finding-metrics {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e5e7eb;
+  font-size: 0.875rem;
+}
+
+.finding-metric {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.finding-threshold {
+  color: var(--gray-600);
+  font-style: italic;
 }
 
 .fixes h4 {
@@ -413,23 +473,67 @@ nav a:hover {
   color: var(--gray-900);
 }
 
+/* Enhanced Fix Styles */
 .fix {
   background: #f0f9ff;
   border: 1px solid #e0f2fe;
   border-radius: 6px;
-  padding: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+
+.fix-priority-1 {
+  border-left: 4px solid #dc2626;
+  background: #fef2f2;
+}
+
+.fix-priority-2 {
+  border-left: 4px solid #d97706;
+  background: #fffbeb;
+}
+
+.fix-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 0.5rem;
+}
+
+.fix-number {
+  background: var(--primary);
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.fix-priority {
+  background: #dc2626;
+  color: white;
+  font-size: 0.75rem;
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
 }
 
 .fix-action {
   font-weight: 600;
   color: var(--gray-900);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
 }
 
 .fix-detail {
   font-size: 0.875rem;
   color: var(--gray-600);
+  line-height: 1.5;
 }
 
 .fix-difficulty {
@@ -437,9 +541,9 @@ nav a:hover {
   font-size: 0.75rem;
   padding: 0.125rem 0.375rem;
   border-radius: 4px;
-  margin-top: 0.25rem;
   text-transform: uppercase;
   font-weight: 600;
+  border: 1px solid;
 }
 
 .difficulty-easy { 

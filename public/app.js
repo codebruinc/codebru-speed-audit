@@ -191,24 +191,35 @@ class SpeedAudit {
         </div>
         
         <div class="findings">
-          <h4>Issues Found</h4>
+          <h4>🔍 Performance Issues Found</h4>
           ${page.findings.findings.map(finding => `
             <div class="finding finding-${finding.impact}">
+              <div class="finding-header">
+                <span class="finding-impact">${finding.impact.toUpperCase()}</span>
+                <span class="finding-category">${finding.category}</span>
+              </div>
               <div class="finding-issue">${finding.issue}</div>
-              <div class="finding-category">${finding.category}</div>
+              ${finding.metric ? `<div class="finding-metrics">
+                <span class="finding-metric">${finding.metric}</span>
+                <span class="finding-threshold">${finding.threshold}</span>
+              </div>` : ''}
             </div>
           `).join('')}
         </div>
         
         <div class="fixes">
-          <h4>Recommended Fixes</h4>
-          ${page.findings.fixes.map(fix => `
-            <div class="fix">
+          <h4>🛠️ Actionable Recommendations</h4>
+          ${page.findings.fixes.map((fix, index) => `
+            <div class="fix fix-priority-${fix.priority || 3}">
+              <div class="fix-header">
+                <span class="fix-number">${index + 1}</span>
+                <span class="fix-difficulty difficulty-${fix.difficulty}">
+                  ${fix.difficulty.toUpperCase()}
+                </span>
+                ${fix.priority && fix.priority <= 2 ? '<span class="fix-priority">HIGH PRIORITY</span>' : ''}
+              </div>
               <div class="fix-action">${fix.action}</div>
               <div class="fix-detail">${fix.detail}</div>
-              <span class="fix-difficulty difficulty-${fix.difficulty}">
-                ${fix.difficulty}
-              </span>
             </div>
           `).join('')}
         </div>

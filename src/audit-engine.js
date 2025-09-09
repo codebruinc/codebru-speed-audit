@@ -200,110 +200,194 @@ async function auditPage(url, browser) {
 }
 
 /**
- * Generate actionable findings
+ * Generate detailed actionable findings
  */
 function generateFindings(data) {
   const findings = [];
   const fixes = [];
   
-  // Finding 1: Load time
-  if (data.loadTime > 3) {
-    if (data.largestResource && parseInt(data.largestResource.size) > 500000) {
-      if (data.largestResource.type === 'image') {
-        findings.push({
-          issue: "Large image at the top slows down mobile loading",
-          impact: "high",
-          category: "performance"
-        });
-        fixes.push({
-          action: "Optimize and resize the hero image",
-          detail: "Compress images and serve responsive sizes based on device",
-          difficulty: "easy"
-        });
-      } else if (data.largestResource.type === 'script') {
-        findings.push({
-          issue: "Heavy JavaScript bundle delays page rendering",
-          impact: "high", 
-          category: "performance"
-        });
-        fixes.push({
-          action: "Split and defer non-critical JavaScript",
-          detail: "Use code splitting and async/defer attributes",
-          difficulty: "medium"
-        });
-      }
-    } else if (data.totalRequests > 50) {
-      findings.push({
-        issue: "Too many resources loading before page appears",
-        impact: "high",
-        category: "performance"
-      });
+  // Critical Issue: Slow Load Time
+  if (data.loadTime > 4) {
+    findings.push({
+      issue: `Page takes ${data.loadTime.toFixed(1)}s to load on mobile - users expect under 3s`,
+      impact: "critical",
+      category: "performance",
+      metric: `${data.loadTime.toFixed(1)}s load time`,
+      threshold: "Target: <3s"
+    });
+    fixes.push({
+      action: "Implement critical resource prioritization",
+      detail: "Load essential content first, defer everything else",
+      difficulty: "medium",
+      priority: 1
+    });
+  } else if (data.loadTime > 2.5) {
+    findings.push({
+      issue: `Page loads in ${data.loadTime.toFixed(1)}s - could be faster on mobile`,
+      impact: "high",
+      category: "performance", 
+      metric: `${data.loadTime.toFixed(1)}s load time`,
+      threshold: "Target: <2.5s"
+    });
+  }
+  
+  // Large Resource Issues  
+  if (data.largestResource && parseInt(data.largestResource.size) > 1000000) {
+    const sizeMB = (parseInt(data.largestResource.size) / 1024 / 1024).toFixed(1);
+    findings.push({
+      issue: `Largest resource is ${sizeMB}MB - too heavy for mobile connections`,
+      impact: "high",
+      category: "resources",
+      metric: `${sizeMB}MB file`,
+      threshold: "Target: <1MB"
+    });
+    
+    if (data.largestResource.type === 'image') {
       fixes.push({
-        action: "Implement resource bundling and lazy loading",
-        detail: "Combine files and load non-critical resources after initial render",
-        difficulty: "medium"
+        action: "Optimize and compress the large image",
+        detail: "Use modern formats (WebP/AVIF), resize for mobile screens, implement lazy loading",
+        difficulty: "easy",
+        priority: 1
+      });
+    } else if (data.largestResource.type === 'script') {
+      fixes.push({
+        action: "Split the large JavaScript bundle",
+        detail: "Use code splitting, tree shaking, and load non-critical code after page render",
+        difficulty: "medium", 
+        priority: 2
       });
     }
   }
   
-  // Finding 2: Third-party scripts
-  if (data.thirdPartyScripts > 5) {
+  // Too Many Requests
+  if (data.totalRequests > 100) {
     findings.push({
-      issue: "Multiple third-party scripts blocking page load",
-      impact: "medium",
-      category: "third-party"
+      issue: `${data.totalRequests} HTTP requests slow down mobile loading`,
+      impact: "high",
+      category: "resources",
+      metric: `${data.totalRequests} requests`,
+      threshold: "Target: <50 requests"
     });
     fixes.push({
-      action: "Defer third-party script loading",
-      detail: "Load analytics and tracking scripts after page is interactive",
-      difficulty: "easy"
+      action: "Bundle and minimize HTTP requests",
+      detail: "Combine CSS/JS files, use CSS sprites for icons, implement resource bundling",
+      difficulty: "medium",
+      priority: 2
+    });
+  } else if (data.totalRequests > 50) {
+    findings.push({
+      issue: `${data.totalRequests} requests could be optimized for mobile`,
+      impact: "medium", 
+      category: "resources",
+      metric: `${data.totalRequests} requests`,
+      threshold: "Target: <30 requests"
     });
   }
   
-  // Finding 3: Forms
+  // Resource Size Issues
+  const totalSizeMB = (data.totalSize / 1024 / 1024).toFixed(1);
+  if (data.totalSize > 5000000) {
+    findings.push({
+      issue: `Total page weight is ${totalSizeMB}MB - too heavy for mobile users`,
+      impact: "high",
+      category: "resources",
+      metric: `${totalSizeMB}MB total`,
+      threshold: "Target: <3MB"
+    });
+    fixes.push({
+      action: "Reduce total page weight",
+      detail: "Compress images, minify CSS/JS, remove unused code, use modern formats",
+      difficulty: "medium",
+      priority: 2
+    });
+  }
+  
+  // Third-party Script Issues
+  if (data.thirdPartyScripts > 8) {
+    findings.push({
+      issue: `${data.thirdPartyScripts} third-party scripts slow down page loading`,
+      impact: "high",
+      category: "third-party",
+      metric: `${data.thirdPartyScripts} external scripts`,
+      threshold: "Target: <5 scripts"
+    });
+    fixes.push({
+      action: "Audit and reduce third-party scripts",
+      detail: "Remove unnecessary tracking, defer analytics scripts, combine similar tools",
+      difficulty: "easy",
+      priority: 2
+    });
+  } else if (data.thirdPartyScripts > 5) {
+    findings.push({
+      issue: `${data.thirdPartyScripts} third-party scripts could be optimized`,
+      impact: "medium",
+      category: "third-party",
+      metric: `${data.thirdPartyScripts} external scripts`,
+      threshold: "Target: <3 scripts"
+    });
+    fixes.push({
+      action: "Defer non-critical third-party scripts",
+      detail: "Load analytics and tracking scripts after main content is visible",
+      difficulty: "easy",
+      priority: 3
+    });
+  }
+  
+  // Mobile Usability Issues
   if (data.hasForms) {
     findings.push({
-      issue: "Form fields lack mobile optimization",
+      issue: "Forms not optimized for mobile users",
       impact: "medium",
-      category: "usability"
+      category: "usability",
+      metric: "Missing mobile optimization",
+      threshold: "Target: Full mobile optimization"
     });
     fixes.push({
-      action: "Add autocomplete attributes to form fields",
-      detail: "Enable autofill for better mobile user experience",
-      difficulty: "easy"
+      action: "Optimize forms for mobile",
+      detail: "Add autocomplete attributes, proper input types, clear labels, and touch-friendly sizing",
+      difficulty: "easy",
+      priority: 3
     });
   }
   
-  // Ensure we have 3 findings
-  if (findings.length < 3) {
-    if (data.imageCount > 20) {
-      findings.push({
-        issue: "High number of image requests",
-        impact: "low",
-        category: "performance"
-      });
-      fixes.push({
-        action: "Implement image lazy loading",
-        detail: "Load images as user scrolls down the page",
-        difficulty: "easy"
-      });
-    }
-    
-    if (findings.length < 3) {
-      findings.push({
-        issue: "Missing performance budget monitoring",
-        impact: "low",
-        category: "monitoring"
-      });
-      fixes.push({
-        action: "Set up performance monitoring",
-        detail: "Track Core Web Vitals and set performance budgets",
-        difficulty: "medium"
-      });
-    }
+  // Image Optimization Issues
+  if (data.imageCount > 30) {
+    findings.push({
+      issue: `${data.imageCount} images increase page load time on mobile`,
+      impact: "medium",
+      category: "resources",
+      metric: `${data.imageCount} images`,
+      threshold: "Target: <20 images"
+    });
+    fixes.push({
+      action: "Implement image lazy loading and optimization",
+      detail: "Load images only when needed, compress all images, use modern formats",
+      difficulty: "easy",
+      priority: 3
+    });
   }
   
-  return { findings: findings.slice(0, 3), fixes: fixes.slice(0, 3) };
+  // Add fallback findings if we don't have enough
+  if (findings.length === 0) {
+    findings.push({
+      issue: "Page could benefit from performance optimization",
+      impact: "low",
+      category: "general",
+      metric: "Basic optimization needed",
+      threshold: "Target: Optimized mobile experience"
+    });
+    fixes.push({
+      action: "Implement basic performance optimizations",
+      detail: "Compress images, minify CSS/JS, enable gzip compression, optimize loading strategy",
+      difficulty: "easy",
+      priority: 1
+    });
+  }
+  
+  // Sort fixes by priority
+  fixes.sort((a, b) => (a.priority || 99) - (b.priority || 99));
+  
+  return { findings, fixes };
 }
 
 /**
