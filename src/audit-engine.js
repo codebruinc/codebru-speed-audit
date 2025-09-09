@@ -18,15 +18,20 @@ const PAGE_PATTERNS = {
  */
 async function validateSite(url) {
   try {
-    // Use dynamic import for fetch in Node.js
-    const fetch = (await import('node-fetch')).default;
+    // Use built-in fetch in Node.js 18+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    
     const response = await fetch(url, { 
-      method: 'HEAD', 
-      timeout: 5000,
+      method: 'HEAD',
+      signal: controller.signal,
       redirect: 'follow' 
     });
+    
+    clearTimeout(timeoutId);
     return response.status < 400;
   } catch (error) {
+    console.log(`[VALIDATE] Error validating ${url}:`, error.message);
     return false;
   }
 }
@@ -46,13 +51,17 @@ async function discoverMoneyPages(baseUrl) {
   for (const [category, patterns] of Object.entries(PAGE_PATTERNS)) {
     for (const pattern of patterns) {
       try {
-        const fetch = (await import('node-fetch')).default;
         const testUrl = `${baseHost}${pattern}`;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+        
         const response = await fetch(testUrl, { 
-          method: 'HEAD', 
-          timeout: 3000,
+          method: 'HEAD',
+          signal: controller.signal,
           redirect: 'follow'
         });
+        
+        clearTimeout(timeoutId);
         
         if (response.status === 200) {
           discovered.push({

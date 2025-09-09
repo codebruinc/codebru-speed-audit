@@ -20,7 +20,7 @@ Open source mobile performance audit tool by CodeBru, Inc - built by engineers, 
 
 ```bash
 # Clone and setup
-git clone https://github.com/codebru/speed-audit
+git clone https://github.com/codebruinc/codebru-speed-audit
 cd speed-audit
 npm install
 
@@ -48,7 +48,7 @@ docker run -p 3000:3000 codebru-speed-audit
 
 1. **Clone on your server**:
 ```bash
-git clone https://github.com/codebru/speed-audit
+git clone https://github.com/codebruinc/codebru-speed-audit
 cd speed-audit
 ```
 
@@ -204,7 +204,7 @@ MIT License - see LICENSE file
 
 ## Support
 
-- **Issues**: https://github.com/codebru/speed-audit/issues
+- **Issues**: https://github.com/codebruinc/codebru-speed-audit/issues
 - **Professional Services**: https://codebru.com
 
 ---

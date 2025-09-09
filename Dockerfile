@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     libcups2 \
     libdbus-1-3 \
     libdrm2 \
+    libgbm1 \
     libgdk-pixbuf2.0-0 \
     libgtk-3-0 \
     libnspr4 \
@@ -38,15 +39,15 @@ COPY package*.json ./
 # Install dependencies
 RUN npm ci --only=production
 
-# Install Playwright
-RUN npx playwright install chromium
-
 # Copy application code
 COPY . .
 
 # Create non-root user for security
 RUN useradd --create-home --shell /bin/bash appuser && chown -R appuser:appuser /app
+
+# Install Playwright browsers for appuser
 USER appuser
+RUN npx playwright install chromium
 
 # Expose port
 EXPOSE 3000
